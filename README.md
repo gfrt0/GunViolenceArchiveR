@@ -24,6 +24,8 @@ In the near future, the code will also include further characteristics contained
 GVA has a very broad definition of gun violence, and the number of incidents is very large as a result (see [here](https://www.gunviolencearchive.org/methodology) for a discussion of their methodology). Care must be taken in comparing the numbers resulting from GVA data with other sources as a result. See [here](https://www.thetruthaboutguns.com/2015/01/foghorn/gun-violence-archive-flawed-start/) for an example of a piece criticising the GVA methodology. In any case, I think the data is interesting; I do not have an opinion on whether it is correct, and for what purposes.
 
 ## Other
-This is a very simple two-day project that I put together to teach myself some [seleniumPipes](https://cran.r-project.org/web/packages/seleniumPipes/vignettes/basicOperation.html). [This repository](https://github.com/jamesqo/gun-violence-data) by James Ko was an important source of inspiration while driving the code and figuring out `css selectors`.
+This is a very simple two-day project that I put together to teach myself some [seleniumPipes](https://cran.r-project.org/web/packages/seleniumPipes/vignettes/basicOperation.html). 
+
+[This repository](https://github.com/jamesqo/gun-violence-data) by James Ko was an important source of inspiration while driving the code and figuring out `css selectors`.
 
 While the code is freely available for others to look at, modify, and use (with attribution, maybe), I do not encourage others to burden the GVA website - especially if you can simply use the data included in the repository or if, in the future, GVA should give users another bulk download option.
