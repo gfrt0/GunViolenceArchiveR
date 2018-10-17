@@ -3,13 +3,14 @@
 #### 0. Preamble ####
 
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load('rvest', 'seleniumPipes', 'tidyr', 'data.table', 'lubridate')
+pacman::p_load('rvest', 'seleniumPipes', 'tidyr', 'data.table', 'lubridate', 'anytime')
 
 if (Sys.getenv("HOME") == "/Users/gforte") {
 setwd(paste0(Sys.getenv("HOME"),'/Dropbox/git/GunViolenceArchiveR'))
 }
 
-missinglog <- c() #Logs days without recorded accidents.
+halt       <- FALSE #Used to break out of loop once today is reached. 
+missinglog <- c() #Logs eventual days without recorded incidents.
 
 #### 0.1 Functions ####
 
@@ -43,7 +44,13 @@ for (year_n in (2014:2018))  {
                          incidentno=character(), source=character(), stringsAsFactors=FALSE)
 
     for (day_n in 1:days_in_month(month_n)) {
-
+       
+      datevar <- ifelse(nchar(date)<10, format(as.Date(date,format="%m/%d/%Y")), date)
+      if (anydate(datevar) == anytime(Sys.Date())) {
+        halt <- TRUE
+        break
+      }
+      
       #### 1.1.1 Daily loop utilities ####
       remDr %>% go("http://www.gunviolencearchive.org/query")
       webElem <- remDr %>% findElement(using = "css selector", ".filter-dropdown-trigger") %>%
@@ -101,7 +108,7 @@ for (year_n in (2014:2018))  {
         table <- data.table(date=character(), state=character(), location=character(),
                             address=character(), killed=character(), injured=character(),
                             incidentno=character(), source=character(), stringsAsFactors=FALSE)
-        missinglog <- c(missinglog, paste0(date," contains no gunshot accidents."))
+        missinglog <- c(missinglog, paste0(date," contains no gun-related incidents."))
       }
 
            dt_day <- data.table::rbindlist(list(dt_day,table), fill = T)
@@ -111,7 +118,9 @@ for (year_n in (2014:2018))  {
       write.csv(dt_month, file = paste0(filename,".csv"))
       rm(filename)
       }
+    if (halt){break}
     }
+  if (halt){break}
   }
 
 write(missinglog, file="missinglog.txt")
