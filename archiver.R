@@ -8,6 +8,7 @@ pacman::p_load('rvest', 'seleniumPipes', 'tidyr', 'data.table', 'lubridate', 'an
 if (Sys.getenv("HOME") == "/Users/gforte") {
 setwd(paste0(Sys.getenv("HOME"),'/Dropbox/git/GunViolenceArchiveR'))
 }
+tryCatch(lapply(c("2014", "2015", "2016", "2017", "2018"), dir.create))
 
 halt       <- FALSE #Used to break out of loop once today is reached. 
 missinglog <- c() #Logs eventual days without recorded incidents.
@@ -115,7 +116,7 @@ for (year_n in (2014:2018))  {
         }
       dt_month <- data.table::rbindlist(list(dt_month,dt_day), fill = T)
       filename <- paste0("m",month_n,"y",year_n)
-      write.csv(dt_month, file = paste0(filename,".csv"))
+      write.csv(dt_month, file = paste0(toString(year_n), filename,".csv"))
       rm(filename)
       }
     if (halt){break}
@@ -124,3 +125,4 @@ for (year_n in (2014:2018))  {
   }
 
 write(missinglog, file="missinglog.txt")
+
