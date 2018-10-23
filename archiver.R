@@ -11,7 +11,6 @@ setwd(paste0(Sys.getenv("HOME"),'/Dropbox/git/GunViolenceArchiveR'))
 tryCatch(lapply(c("2014", "2015", "2016", "2017", "2018"), dir.create))
 
 halt       <- FALSE #Used to break out of loop once today is reached. 
-missinglog <- c() #Logs eventual days without recorded incidents.
 colnm      <- c("date", "state", "location", "address", "killed", "injured", "incidentno", "source")
 
 #### 1. Functions ####
@@ -149,8 +148,6 @@ for (year_n in (2014:2018))  {
       }
     if (halt){break}
   }
-
-write(missinglog, file="missinglog.txt")
 
 #### 3.0 Incident characteristics ####
 
