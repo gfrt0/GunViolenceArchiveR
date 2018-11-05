@@ -19,6 +19,13 @@ For the period from 1/1/2014 onwards, `archiver.R` creates monthly .csv tables c
 * Source of the news
 
 Once all monthly files have been created, `incidentchars.R` scrapes individual incident webpages and merges information in the .csv tables created above. There are ~5000 incidents per month, and it takes roughly 60-70 mins per month for the scrape to complete.
+Incident pages contain (a subset, usually) of the following information:
+* Geolocation (Latitude and Longitude) 
+* Participants characteristics
+* Incident characteristics
+* Guns involved
+* Notes
+* Congressional/State Senate/State House District numbers
 
 ## Limitations
 GVA has a very broad definition of gun violence, and the number of incidents is very large as a result (see [here](https://www.gunviolencearchive.org/methodology) for a discussion of their methodology). Care must be taken in comparing the numbers resulting from GVA data with other sources as a result. See [here](https://www.thetruthaboutguns.com/2015/01/foghorn/gun-violence-archive-flawed-start/) for an example of a piece criticising the GVA methodology. In any case, I think the data is interesting; I do not have an opinion on whether it is correct, and for what purposes.
