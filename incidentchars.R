@@ -3,7 +3,7 @@
 #### 0. Preamble ####
 
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load('rvest', 'seleniumPipes', 'tidyr', 'plyr', 'data.table', 'lubridate', 'anytime')
+pacman::p_load('rvest', 'RSelenium', 'tidyr', 'plyr', 'data.table', 'lubridate', 'anytime', 'httr', 'robotstxt')
 
 if (Sys.getenv("HOME") == "/Users/gforte") {
   setwd(paste0(Sys.getenv("HOME"),'/Dropbox/git/GunViolenceArchiveR'))
@@ -15,19 +15,20 @@ missinginc <- c() #Logs eventual incidents without dedicated page.
 
 #### 0.1 Functions ####
 
-declutter <- function(x) {
-  
-    x <- x %>% gsub("<div>|</div>", "", .) %>% gsub("</span>|<span>", "",.) %>% gsub("<p>|</p>", "", .) %>%
-          gsub("\n|<br>", " ", .) %>% gsub("<ul> <li>|</li> </ul>", "", .) %>%  gsub("<br>", "", .) %>% 
-          trimws(.) %>% gsub("</li> <li>", " | ", .) %>% gsub("<h2>", "", .) %>% unique(.) %>%
-          gsub(".*Geolocation: ","Geoloc</h2> ",.) %>% .[!grepl("href=", .)] %>% .[grepl("</h2>", .)]
-       
-    return(x)
+declutter <- 
+  function(x) {
+    
+    x %>% gsub("<div>|</div>", "", .) %>% gsub("</span>|<span>", "",.) %>% gsub("<p>|</p>", "", .) %>%
+    gsub("\n|<br>", " ", .) %>% gsub("<ul> <li>|</li> </ul>", "", .) %>%  gsub("<br>", "", .) %>% 
+    trimws(.) %>% gsub("</li> <li>", " | ", .) %>% gsub("<h2>", "", .) %>% unique(.) %>%
+    gsub(".*Geolocation: ","Geoloc</h2> ",.) %>% .[!grepl("href=", .)] %>% .[grepl("</h2>", .)]
+    
   }
 
-getCharacteristics <- function(incident, inclist) {
+getCharacteristics <- 
+  function(incident, inclist) {
 
-    message("row ", which(grepl(incident, inclist)), "/", length(inclist), ": ", incident)
+    cat("row ", which(grepl(incident, inclist)), "/", length(inclist), ":", incident, "\n")
   
     result <- try({
                     url    <- paste0("https://www.gunviolencearchive.org/incident/", incident) %>% 
@@ -57,17 +58,15 @@ getCharacteristics <- function(incident, inclist) {
   }
 
 giveCharacteristics <- function(csvfile) {
-  
     
     dt_inc <- data.table(incidentno=double(), geolocation=character(), participants=character(),
                          characteristics=character(), guns=character(), notes=character(), 
                          district=character(), stringsAsFactors=FALSE)
     dayincidents <- dt_inc
     data <- read.csv(csvfile) %>% subset(., select = -X)
-    list <- data$incidentno %>% as.list()
-    
-    for (item in list) {
-      allch <- getCharacteristics(item, list)
+
+    for (item in data$incidentno[1:10]) {
+      allch <- getCharacteristics(item, data$incidentno)
       dayincidents <- rbind.fill(allch, dayincidents)
     }
     
@@ -79,8 +78,9 @@ giveCharacteristics <- function(csvfile) {
 
 #### 1. Execute ####
 
-filelist <- lapply((2014:2018), function(x) {paste0(x, '/', list.files(paste0(x, '/')))}) %>% unlist(.) %>% .[21:length(.)]
+filelist <- lapply((2014:2018), function(x) {paste0(x, '/', list.files(paste0(x, '/')))}) %>% unlist(.) #%>% .[2:length(.)]
+
+robotstxt::robotstxt('https://www.gunviolencearchive.org/incident/')
 
 for (file in filelist) giveCharacteristics(file)
       
-
