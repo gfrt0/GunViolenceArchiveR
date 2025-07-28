@@ -1,5 +1,4 @@
 # GunViolenceArchiveR
-**[Giuseppe Forte](mailto:giancagni[at]gmail[dot]com)**
 
 ## Purpose
 1. To collect in a dataset the information on gunshot incidents that currently
